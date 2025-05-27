@@ -26,20 +26,19 @@ import coil3.compose.AsyncImage
 import dydsproject.composeapp.generated.resources.*
 import edu.dyds.movies.presentation.utils.LoadingIndicator
 import edu.dyds.movies.domain.entity.Movie
-import edu.dyds.movies.presentation.MoviesViewModel
 import edu.dyds.movies.presentation.utils.NoResults
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(viewModel: MoviesViewModel, id: Int, onBack: () -> Unit) {
+fun DetailScreen(detailViewModel: DetailViewModel, id: Int, onBack: () -> Unit) {
 
-    val state by viewModel.movieDetailStateFlow.collectAsState(MoviesViewModel.MovieDetailUiState())
+    val state by detailViewModel.movieDetailStateFlow.collectAsState(DetailViewModel.MovieDetailUiState())
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     LaunchedEffect(Unit) {
-        viewModel.getMovieDetail(id)
+        detailViewModel.getMovieDetail(id)
     }
 
     MaterialTheme {
@@ -58,7 +57,7 @@ fun DetailScreen(viewModel: MoviesViewModel, id: Int, onBack: () -> Unit) {
 
                 when {
                     state.movie != null -> MovieDetail(movie = state.movie!!, modifier = Modifier.padding(padding))
-                    state.isLoading.not() -> NoResults { viewModel.getMovieDetail(id) }
+                    state.isLoading.not() -> NoResults { detailViewModel.getMovieDetail(id) }
                 }
             }
         }

@@ -22,7 +22,6 @@ import dydsproject.composeapp.generated.resources.app_name
 import dydsproject.composeapp.generated.resources.error
 import edu.dyds.movies.presentation.utils.LoadingIndicator
 import edu.dyds.movies.domain.entity.Movie
-import edu.dyds.movies.presentation.MoviesViewModel
 import edu.dyds.movies.presentation.utils.NoResults
 import edu.dyds.movies.domain.entity.QualifiedMovie
 import org.jetbrains.compose.resources.stringResource
@@ -30,15 +29,15 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: MoviesViewModel,
+    homeViewModel: HomeViewModel,
     onGoodMovieClick: (Movie) -> Unit
 ) {
 
     LaunchedEffect(Unit) {
-        viewModel.getAllMovies()
+        homeViewModel.getAllMovies()
     }
 
-    val state by viewModel.moviesStateFlow.collectAsState(MoviesViewModel.MoviesUiState())
+    val state by homeViewModel.moviesStateFlow.collectAsState(HomeViewModel.MoviesUiState())
 
     MaterialTheme {
         Surface {
@@ -57,7 +56,7 @@ fun HomeScreen(
 
                 when {
                     state.movies.isNotEmpty() -> MovieGrid(padding, state.movies, onGoodMovieClick)
-                    state.isLoading.not() -> NoResults { viewModel.getAllMovies() }
+                    state.isLoading.not() -> NoResults { homeViewModel.getAllMovies() }
                 }
             }
         }

@@ -2,7 +2,8 @@ package edu.dyds.movies.di
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import edu.dyds.movies.presentation.MoviesViewModel
+import edu.dyds.movies.presentation.home.HomeViewModel
+import edu.dyds.movies.presentation.detail.DetailViewModel
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -34,7 +35,11 @@ object MoviesDependencyInjector {
         }
 
     @Composable
-    fun getMoviesViewModel(): MoviesViewModel {
-        return viewModel { MoviesViewModel(tmdbHttpClient) }
+    fun getDetailViewModel(): DetailViewModel {
+        return viewModel { DetailViewModel(tmdbHttpClient) }
+    }
+    @Composable
+    fun getHomeViewModel(): HomeViewModel {
+        return viewModel { HomeViewModel(tmdbHttpClient) }
     }
 }
