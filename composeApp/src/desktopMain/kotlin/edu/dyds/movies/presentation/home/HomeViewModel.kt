@@ -3,8 +3,9 @@ package edu.dyds.movies.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import edu.dyds.movies.domain.entity.QualifiedMovie
-import edu.dyds.movies.domain.entity.RemoteMovie
-import edu.dyds.movies.domain.entity.RemoteResult
+import edu.dyds.movies.data.RemoteMovie
+import edu.dyds.movies.data.RemoteResult
+import edu.dyds.movies.data.toDomainMovie
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

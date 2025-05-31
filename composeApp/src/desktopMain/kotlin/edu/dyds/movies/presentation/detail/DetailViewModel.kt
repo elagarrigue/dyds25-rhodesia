@@ -3,7 +3,8 @@ package edu.dyds.movies.presentation.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import edu.dyds.movies.domain.entity.Movie
-import edu.dyds.movies.domain.entity.RemoteMovie
+import edu.dyds.movies.data.RemoteMovie
+import edu.dyds.movies.data.toDomainMovie
 import edu.dyds.movies.domain.usecase.GetMovieDetailsUseCase
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
