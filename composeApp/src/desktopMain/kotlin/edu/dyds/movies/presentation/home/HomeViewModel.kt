@@ -3,23 +3,14 @@ package edu.dyds.movies.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import edu.dyds.movies.domain.entity.QualifiedMovie
-import edu.dyds.movies.data.RemoteMovie
-import edu.dyds.movies.data.RemoteResult
-import edu.dyds.movies.data.toDomainMovie
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
+import edu.dyds.movies.domain.usecase.PopularMoviesUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-private const val MIN_VOTE_AVERAGE = 6.0
-
 class HomeViewModel(
-    private val tmdbHttpClient: HttpClient,
+    private val popularMoviesUseCase: PopularMoviesUseCase,
 ) : ViewModel() {
-
-    private val cacheMovies: MutableList<RemoteMovie> = mutableListOf()
 
     private val moviesStateMutableStateFlow = MutableStateFlow(MoviesUiState())
 
@@ -33,39 +24,11 @@ class HomeViewModel(
             moviesStateMutableStateFlow.emit(
                 MoviesUiState(
                     isLoading = false,
-                    movies = getPopularMovies().sortAndMap()
+                    movies = popularMoviesUseCase.execute()
                 )
             )
         }
     }
-
-    private suspend fun getPopularMovies() =
-        if (cacheMovies.isNotEmpty()) {
-            cacheMovies
-        } else {
-            try {
-                getTMDBPopularMovies().results.apply {
-                    cacheMovies.clear()
-                    cacheMovies.addAll(this)
-                }
-            } catch (e: Exception) {
-                emptyList()
-            }
-        }
-
-    private fun List<RemoteMovie>.sortAndMap(): List<QualifiedMovie> {
-        return this
-            .sortedByDescending { it.voteAverage }
-            .map {
-                QualifiedMovie(
-                    movie = it.toDomainMovie(),
-                    isGoodMovie = it.voteAverage >= MIN_VOTE_AVERAGE
-                )
-            }
-    }
-
-    private suspend fun getTMDBPopularMovies(): RemoteResult =
-        tmdbHttpClient.get("/3/discover/movie?sort_by=popularity.desc").body()
 
     data class MoviesUiState(
         val isLoading: Boolean = false,
