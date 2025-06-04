@@ -12,20 +12,24 @@ class MoviesRepositoryImplementation(
     private val source: ExternalSource
 ): MoviesRepository {
 
-    override suspend fun getPopularMovies(): List<Movie> =
-        cacheMovies.getPopularMoviesFromSource().ifEmpty {
-            source.getPopularMoviesFromSource().map { it.toDomainMovie() }.apply {
-                cacheMovies.update(this)
+    override suspend fun getPopularMovies(): List<Movie> {
+        return try{
+            cacheMovies.getPopularMoviesFromSource().ifEmpty {
+                source.getPopularMoviesFromSource().map {it. toDomainMovie()}.also{
+                    cacheMovies.update(it)
+                }
             }
+        } catch(e: Exception){
+            emptyList()
         }
+    }
 
-    override suspend fun getMovieDetails(id: Int): Movie? =
-        /*
-         * TODO: preguntar si está bien esto, porque resultado de la
-         *  implementación de getPopularMovies, siempre resulta en un
-         *  cache hit y nunca pide los detalles a source (remote source)
-         */
-        cacheMovies.getMovieDetailsFromSource(id)?:
+    override suspend fun getMovieDetails(id: Int): Movie? {
+        return try {
             source.getMovieDetailsFromSource(id)?.toDomainMovie()
+        } catch (e: Exception) {
+            null
+        }
+    }
 
 }

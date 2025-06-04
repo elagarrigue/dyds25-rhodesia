@@ -34,21 +34,13 @@ class HTTPSource: ExternalSource {
     }
 
     override suspend fun getMovieDetailsFromSource(id: Int): RemoteMovie? {
-        val movieDetails = try {
-            getTMDBMovieDetails(id)
-        } catch (_: Exception) {
-            null
-        }
+        val movieDetails = getTMDBMovieDetails(id)
 
         return movieDetails
     }
 
     override suspend fun getPopularMoviesFromSource(): List<RemoteMovie> =
-        try {
-            getTMDBPopularMovies().results
-        } catch (_: Exception) {
-            emptyList()
-        }
+        getTMDBPopularMovies().results
 
     private suspend fun getTMDBMovieDetails(id: Int): RemoteMovie =
         tmdbHttpClient.get("/3/movie/$id").body()
