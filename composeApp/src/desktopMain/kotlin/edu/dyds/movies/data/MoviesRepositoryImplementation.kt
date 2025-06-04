@@ -14,7 +14,7 @@ class MoviesRepositoryImplementation(
     override suspend fun getPopularMovies(): List<Movie> {
         return try{
             cacheMovies.getPopularMoviesFromSource().ifEmpty {
-                source.getPopularMoviesFromSource().map {it. toDomainMovie()}.also{
+                source.getPopularMoviesFromSource().also{
                     cacheMovies.update(it)
                 }
             }
@@ -25,7 +25,7 @@ class MoviesRepositoryImplementation(
 
     override suspend fun getMovieDetails(id: Int): Movie? {
         return try {
-            source.getMovieDetailsFromSource(id)?.toDomainMovie()
+            source.getMovieDetailsFromSource(id)
         } catch (e: Exception) {
             null
         }

@@ -1,5 +1,6 @@
 package edu.dyds.movies.data.external
 
+import edu.dyds.movies.domain.entity.Movie
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest
@@ -9,6 +10,7 @@ import io.ktor.client.request.get
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+
 
 private const val API_KEY = "d18da1b5da16397619c688b0263cd281"
 
@@ -31,14 +33,14 @@ class HTTPSource: ExternalSource {
         }
     }
 
-    override suspend fun getMovieDetailsFromSource(id: Int): RemoteMovie? {
+    override suspend fun getMovieDetailsFromSource(id: Int): Movie {
         val movieDetails = getTMDBMovieDetails(id)
 
-        return movieDetails
+        return movieDetails.toDomainMovie()
     }
 
-    override suspend fun getPopularMoviesFromSource(): List<RemoteMovie> =
-        getTMDBPopularMovies().results
+    override suspend fun getPopularMoviesFromSource(): List<Movie> =
+        getTMDBPopularMovies().results.map {it. toDomainMovie()}
 
     private suspend fun getTMDBMovieDetails(id: Int): RemoteMovie =
         tmdbHttpClient.get("/3/movie/$id").body()
