@@ -1,8 +1,7 @@
 package edu.dyds.movies.data
 
 import edu.dyds.movies.data.external.ExternalSource
-import edu.dyds.movies.data.external.HTTPSource
-import edu.dyds.movies.data.local.CacheEmulator
+import edu.dyds.movies.data.external.toDomainMovie
 import edu.dyds.movies.data.local.LocalSource
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.repository.MoviesRepository

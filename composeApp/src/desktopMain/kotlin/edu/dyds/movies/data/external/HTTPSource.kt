@@ -1,7 +1,5 @@
 package edu.dyds.movies.data.external
 
-import edu.dyds.movies.data.RemoteMovie
-import edu.dyds.movies.data.RemoteResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest

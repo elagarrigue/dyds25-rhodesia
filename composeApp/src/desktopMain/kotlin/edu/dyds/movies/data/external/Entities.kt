@@ -1,6 +1,5 @@
-package edu.dyds.movies.data
+package edu.dyds.movies.data.external
 
-import edu.dyds.movies.domain.entity.Movie
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
