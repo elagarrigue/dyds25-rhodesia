@@ -7,14 +7,10 @@ import edu.dyds.movies.data.local.LocalSource
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.repository.MoviesRepository
 
-class MoviesRepositoryImplementation(): MoviesRepository {
-
-    /*
-     * TODO: Preguntar si está bien crear los objetos acá o deberían
-     *  ser inyectados con el dependency injector
-     */
-    private val cacheMovies: LocalSource = CacheEmulator()
-    private val source: ExternalSource = HTTPSource()
+class MoviesRepositoryImplementation(
+    private val cacheMovies: LocalSource,
+    private val source: ExternalSource
+): MoviesRepository {
 
     override suspend fun getPopularMovies(): List<Movie> =
         cacheMovies.getPopularMoviesFromSource().ifEmpty {
