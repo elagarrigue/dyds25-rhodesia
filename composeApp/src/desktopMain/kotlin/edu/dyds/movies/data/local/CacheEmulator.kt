@@ -6,12 +6,8 @@ class CacheEmulator: LocalSource {
 
     private val emulatorList: MutableList<Movie> = mutableListOf()
 
-    override suspend fun getMovieDetailsFromSource(id: Int): Movie? =
-        try {
-            emulatorList.first { it.id == id }
-        } catch (_: NoSuchElementException) {
-            null
-        }
+    override suspend fun getMovieDetailsFromSource(id: Int): Movie =
+        emulatorList.first { it.id == id }
 
 
     override suspend fun getPopularMoviesFromSource(): List<Movie> {

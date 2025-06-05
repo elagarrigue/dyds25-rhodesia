@@ -33,11 +33,8 @@ class HTTPSource: ExternalSource {
         }
     }
 
-    override suspend fun getMovieDetailsFromSource(id: Int): Movie {
-        val movieDetails = getTMDBMovieDetails(id)
-
-        return movieDetails.toDomainMovie()
-    }
+    override suspend fun getMovieDetailsFromSource(id: Int): Movie =
+        getTMDBMovieDetails(id).toDomainMovie()
 
     override suspend fun getPopularMoviesFromSource(): List<Movie> =
         getTMDBPopularMovies().results.map {it. toDomainMovie()}
