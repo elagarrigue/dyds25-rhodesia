@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 
 private const val API_KEY = "d18da1b5da16397619c688b0263cd281"
 
-class HTTPSource: ExternalSource {
+class TMDBExternalSource: MoviesExternalSource {
     private val tmdbHttpClient: HttpClient = HttpClient {
         install(ContentNegotiation) {
             json(Json {

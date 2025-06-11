@@ -2,9 +2,9 @@ package edu.dyds.movies.di
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import edu.dyds.movies.data.MoviesRepositoryImplementation
-import edu.dyds.movies.data.external.HTTPSource
-import edu.dyds.movies.data.local.CacheEmulator
+import edu.dyds.movies.data.MoviesRepositoryImp
+import edu.dyds.movies.data.external.TMDBExternalSource
+import edu.dyds.movies.data.local.CacheLocalSource
 import edu.dyds.movies.domain.repository.MoviesRepository
 import edu.dyds.movies.domain.usecase.MovieDetailsUseCaseImplementation
 import edu.dyds.movies.domain.usecase.MovieDetailsUseCase
@@ -14,9 +14,9 @@ import edu.dyds.movies.presentation.home.HomeViewModel
 import edu.dyds.movies.presentation.detail.DetailViewModel
 
 object MoviesDependencyInjector {
-    private val cacheMovies = CacheEmulator()
-    private val source = HTTPSource()
-    private val repository: MoviesRepository = MoviesRepositoryImplementation(cacheMovies, source)
+    private val cacheMovies = CacheLocalSource()
+    private val source = TMDBExternalSource()
+    private val repository: MoviesRepository = MoviesRepositoryImp(cacheMovies, source)
     private val popularMoviesUseCase: PopularMoviesUseCase = PopularMoviesUseCaseImplementation(repository)
     private val movieDetailsUseCase: MovieDetailsUseCase = MovieDetailsUseCaseImplementation(repository)
 

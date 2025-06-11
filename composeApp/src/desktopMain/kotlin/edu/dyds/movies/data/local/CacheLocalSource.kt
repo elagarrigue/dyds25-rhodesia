@@ -2,7 +2,7 @@ package edu.dyds.movies.data.local
 
 import edu.dyds.movies.domain.entity.Movie
 
-class CacheEmulator: LocalSource {
+class CacheLocalSource: MoviesLocalSource {
 
     private val emulatorList: MutableList<Movie> = mutableListOf()
 
