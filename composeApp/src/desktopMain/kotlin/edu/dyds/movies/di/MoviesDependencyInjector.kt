@@ -12,10 +12,37 @@ import edu.dyds.movies.domain.usecase.PopularMoviesUseCase
 import edu.dyds.movies.domain.usecase.PopularMoviesUseCaseImplementation
 import edu.dyds.movies.presentation.home.HomeViewModel
 import edu.dyds.movies.presentation.detail.DetailViewModel
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.URLProtocol
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+
+private const val API_KEY = "d18da1b5da16397619c688b0263cd281"
 
 object MoviesDependencyInjector {
+    private val tmdbHttpClient: HttpClient = HttpClient {
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+            })
+        }
+        install(DefaultRequest) {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = "api.themoviedb.org"
+                parameters.append("api_key", API_KEY)
+            }
+        }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 5000
+        }
+    }
+
     private val cacheMovies = CacheLocalSource()
-    private val source = TMDBExternalSource()
+    private val source = TMDBExternalSource(tmdbHttpClient)
     private val repository: MoviesRepository = MoviesRepositoryImp(cacheMovies, source)
     private val popularMoviesUseCase: PopularMoviesUseCase = PopularMoviesUseCaseImplementation(repository)
     private val movieDetailsUseCase: MovieDetailsUseCase = MovieDetailsUseCaseImplementation(repository)
