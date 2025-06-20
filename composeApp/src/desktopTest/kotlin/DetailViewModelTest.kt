@@ -23,7 +23,7 @@ class DetailViewModelTest {
     }
 
     private val fakeUseCase = object : MovieDetailsUseCase {
-        override suspend fun execute(id: Int): Movie {
+        override suspend fun execute(movieId: Int): Movie {
             yield()
             return TestDependencyInjector.getTestMovie()
         }
