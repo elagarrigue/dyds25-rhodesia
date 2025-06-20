@@ -14,6 +14,7 @@ class CacheLocalSourceTest {
     fun `cacheLocalSource returns an empty list when no movie was added`() {
         // Arrange
         var moviesList = emptyList<Movie>()
+        val expectedList = emptyList<Movie>()
 
         // Act
         runTest {
@@ -21,7 +22,7 @@ class CacheLocalSourceTest {
         }
 
         // Assert
-        assertEquals(emptyList<Movie>(), moviesList)
+        assertEquals(expectedList, moviesList)
     }
 
     @Test
@@ -31,25 +32,16 @@ class CacheLocalSourceTest {
             TestDependencyInjector.getTestMovie()
         )
         var resultMovieList = emptyList<Movie>()
-        var preUpdateSize = -1
-        var posUpdateSize = -1
 
         // Act
         runTest {
-
-            preUpdateSize = cacheLocalSource.getPopularMoviesFromSource().size
-
             cacheLocalSource.update(expectedListPosUpdate)
 
             resultMovieList = cacheLocalSource.getPopularMoviesFromSource()
-
-            posUpdateSize = resultMovieList.size
         }
 
         // Assert
         assertEquals(expectedListPosUpdate, resultMovieList)
-        assertEquals(0, preUpdateSize)
-        assertEquals(1, posUpdateSize)
     }
 
 }
