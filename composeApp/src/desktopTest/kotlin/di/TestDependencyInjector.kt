@@ -16,7 +16,7 @@ object TestDependencyInjector {
 
     fun getTestMovie() = createMovie()
 
-    private fun createMovie(id: Int = 0, voteAverage: Double = 0.0) = Movie(
+    fun createMovie(id: Int = 0, voteAverage: Double = 0.0) = Movie(
         id = id,
         title = "title",
         overview = "overview",
