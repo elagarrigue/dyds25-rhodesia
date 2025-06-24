@@ -2,7 +2,7 @@ import di.TestDependencyInjector
 import edu.dyds.movies.data.local.CacheLocalSource
 import edu.dyds.movies.domain.entity.Movie
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
@@ -26,7 +26,7 @@ class CacheLocalSourceTest {
     }
 
     @Test
-    fun `cacheLocalSource effectively updates when calling update() with a list`() {
+    fun `cacheLocalSource effectively updates when was empty on update()`() {
         // Arrange
         val expectedListPosUpdate = listOf(
             TestDependencyInjector.getTestMovie()
@@ -42,6 +42,21 @@ class CacheLocalSourceTest {
 
         // Assert
         assertEquals(expectedListPosUpdate, resultMovieList)
+    }
+
+    @Test
+    fun `cacheLocalSource effectively updates when wasn't empty on update()`() = runTest {
+        // Arrange
+        val expectedListPosUpdate = mutableListOf<Movie>(TestDependencyInjector.getTestMovie())
+        expectedListPosUpdate.addAll(TestDependencyInjector.getTestMovieList())
+
+        cacheLocalSource.update(listOf(TestDependencyInjector.getTestMovie()))
+
+        //act
+        cacheLocalSource.update(TestDependencyInjector.getTestMovieList())
+
+        // Assert
+        assertEquals(expectedListPosUpdate, cacheLocalSource.getPopularMoviesFromSource())
     }
 
 }
