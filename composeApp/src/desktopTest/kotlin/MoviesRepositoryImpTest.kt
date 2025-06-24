@@ -52,23 +52,23 @@ class MoviesRepositoryImpTest {
         //act
         val result = repo.getPopularMovies()
         //assert
-        assertEquals(moviesList.size, result.size)
-        assertEquals(moviesList.first(), result.first())
+        assertEquals(moviesList, result)
     }
 
     @Test
     fun `getPopularMovies fetches from external if local is empty`() = runTest {
         // arrange
         val moviesList = TestDependencyInjector.getTestMovieList()
+        val local = FakeSuccessfulLocalSource()
         val repo = MoviesRepositoryImp(
-            FakeSuccessfulLocalSource(),
+            local,
             FakeSuccessfulExternalSource(moviesList)
         )
         // act
         val result = repo.getPopularMovies()
         // assert
-        assertEquals(moviesList.size, result.size)
-        assertEquals(moviesList.first(), result.first())
+        assertEquals(moviesList, result)
+        assertEquals(moviesList, local.movies)
     }
 
 
