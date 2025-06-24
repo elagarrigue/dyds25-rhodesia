@@ -1,7 +1,7 @@
-package di
+package edu.dyds.movies.di
 
 import edu.dyds.movies.domain.entity.Movie
-import fakes.MoviesRepositoryFake
+import edu.dyds.movies.data.fakes.MoviesRepositoryFake
 
 object TestDependencyInjector {
 

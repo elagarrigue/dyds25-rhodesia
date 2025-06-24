@@ -1,4 +1,6 @@
-import di.TestDependencyInjector
+package edu.dyds.movies.domain.usecase
+
+import edu.dyds.movies.di.TestDependencyInjector
 import edu.dyds.movies.domain.usecase.MovieDetailsUseCaseImplementation
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test

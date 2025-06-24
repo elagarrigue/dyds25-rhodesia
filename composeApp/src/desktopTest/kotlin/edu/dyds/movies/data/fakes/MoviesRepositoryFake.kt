@@ -1,6 +1,6 @@
-package fakes
+package edu.dyds.movies.data.fakes
 
-import di.TestDependencyInjector
+import edu.dyds.movies.di.TestDependencyInjector
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.repository.MoviesRepository
 

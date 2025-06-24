@@ -1,4 +1,6 @@
-import di.TestDependencyInjector
+package edu.dyds.movies.presentation
+
+import edu.dyds.movies.di.TestDependencyInjector
 import edu.dyds.movies.domain.entity.QualifiedMovie
 import edu.dyds.movies.domain.usecase.PopularMoviesUseCase
 import edu.dyds.movies.presentation.home.HomeViewModel

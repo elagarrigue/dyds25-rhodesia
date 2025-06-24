@@ -1,5 +1,6 @@
-import di.TestDependencyInjector
-import edu.dyds.movies.data.MoviesRepositoryImp
+package edu.dyds.movies.data
+
+import edu.dyds.movies.di.TestDependencyInjector
 import edu.dyds.movies.data.external.MoviesExternalSource
 import edu.dyds.movies.data.local.MoviesLocalSource
 import edu.dyds.movies.domain.entity.Movie
