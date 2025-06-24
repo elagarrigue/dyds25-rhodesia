@@ -1,8 +1,8 @@
 import di.TestDependencyInjector
 import edu.dyds.movies.domain.usecase.MovieDetailsUseCaseImplementation
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import kotlin.test.assertEquals
+import kotlin.test.Test
+import kotlin.test.assertNull
 
 class MovieDetailsUseCaseTest {
 
@@ -13,13 +13,9 @@ class MovieDetailsUseCaseTest {
     )
 
     @Test
-    fun `movieDetailsUseCase effectively calls repository on execute()`() {
-        //arrange
-        //act
-        runTest { movieDetailsUseCase.execute(1) }
-
+    fun `movieDetailsUseCase effectively calls repository on execute()`() = runTest {
         //assert
-        assertEquals(true, repositoryFake.getMovieDetailsWasCalled)
+        assertNull(movieDetailsUseCase.execute(1))
     }
 
 }

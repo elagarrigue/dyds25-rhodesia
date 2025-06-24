@@ -1,8 +1,9 @@
 import di.TestDependencyInjector
+import di.TestDependencyInjector.createMovie
 import edu.dyds.movies.domain.entity.QualifiedMovie
 import edu.dyds.movies.domain.usecase.PopularMoviesUseCaseImplementation
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PopularMoviesUseCaseTest {
@@ -24,18 +25,17 @@ class PopularMoviesUseCaseTest {
     }
 
     @Test
-    fun `popularMoviesUseCase correctly returns a popular movies list`() {
+    fun `popularMoviesUseCase correctly returns a popular movies list`() = runTest {
         // Arrange
-        val expectedMovieList = TestDependencyInjector.getTestMovieList().sortedByDescending {
-            it.voteAverage
-        }.map {
-            movie ->
-            QualifiedMovie(movie, movie.voteAverage >= 6)
-        }
-        var result: List<QualifiedMovie> = emptyList()
+        val expectedMovieList = listOf(
+            QualifiedMovie(createMovie(0, 9.7), true),
+            QualifiedMovie(createMovie(0, 6.7), true),
+            QualifiedMovie(createMovie(0, 3.6), false),
+            QualifiedMovie(createMovie(0, 1.7), false),
+        )
 
         // Act
-        runTest { result = popularMoviesUseCase.execute() }
+        val result = popularMoviesUseCase.execute()
 
         // Assert
         assertEquals(expectedMovieList, result)
