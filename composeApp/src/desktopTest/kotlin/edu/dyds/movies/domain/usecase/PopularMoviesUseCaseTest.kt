@@ -3,7 +3,6 @@ package edu.dyds.movies.domain.usecase
 import edu.dyds.movies.di.TestDependencyInjector
 import edu.dyds.movies.di.TestDependencyInjector.createMovie
 import edu.dyds.movies.domain.entity.QualifiedMovie
-import edu.dyds.movies.domain.usecase.PopularMoviesUseCaseImplementation
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
