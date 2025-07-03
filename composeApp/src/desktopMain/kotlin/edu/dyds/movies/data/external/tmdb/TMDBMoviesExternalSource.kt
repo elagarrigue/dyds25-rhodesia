@@ -11,15 +11,15 @@ class TMDBMoviesExternalSource(private val tmdbHttpClient: HttpClient) : Popular
     DetailedMovieExternalSource {
 
     override suspend fun getMovieDetailsFromSource(title : String): Movie =
-        getTMDBMovieDetails(title).toDomainMovie()
+        getTMDBMovieDetails(title).TMDBtoDomainMovie()
 
     override suspend fun getPopularMoviesFromSource(): List<Movie> =
-        getTMDBPopularMovies().results.map {it. toDomainMovie()}
+        getTMDBPopularMovies().results.map {it. TMDBtoDomainMovie()}
 
-    private suspend fun getTMDBMovieDetails(title: String): RemoteMovie =
+    private suspend fun getTMDBMovieDetails(title: String): TMDBRemoteMovie =
         tmdbHttpClient.get("/3/movie?query=$title").body()
 
-    private suspend fun getTMDBPopularMovies(): RemoteResult =
+    private suspend fun getTMDBPopularMovies(): TMDBRemoteResult =
         tmdbHttpClient.get("/3/discover/movie?sort_by=popularity.desc").body()
 
 }
