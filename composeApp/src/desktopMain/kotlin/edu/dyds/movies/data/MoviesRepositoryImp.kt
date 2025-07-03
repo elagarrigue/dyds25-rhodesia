@@ -1,19 +1,19 @@
 package edu.dyds.movies.data
 
-import edu.dyds.movies.data.external.MoviesExternalSource
+import edu.dyds.movies.data.external.MoviesExternalSourceBroker
 import edu.dyds.movies.data.local.MoviesLocalSource
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.repository.MoviesRepository
 
 class MoviesRepositoryImp(
     private val moviesLocalSource: MoviesLocalSource,
-    private val moviesExternalSource: MoviesExternalSource
+    private val moviesExternalSourceBroker: MoviesExternalSourceBroker
 ): MoviesRepository {
 
     override suspend fun getPopularMovies(): List<Movie> =
         try{
             moviesLocalSource.getPopularMoviesFromSource().ifEmpty {
-                moviesExternalSource.getPopularMoviesFromSource().also {
+                moviesExternalSourceBroker.getPopularMoviesFromSource().also {
                     moviesLocalSource.update(it)
                 }
             }
@@ -23,7 +23,7 @@ class MoviesRepositoryImp(
 
     override suspend fun getMovieDetails(id: Int): Movie? =
         try {
-            moviesExternalSource.getMovieDetailsFromSource(id)
+            moviesExternalSourceBroker.getMovieDetailsFromSource(id)
         } catch (_: Exception) {
             null
         }
