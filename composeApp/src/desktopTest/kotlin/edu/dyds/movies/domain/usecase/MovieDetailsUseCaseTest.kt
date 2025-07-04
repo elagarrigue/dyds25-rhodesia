@@ -16,7 +16,7 @@ class MovieDetailsUseCaseTest {
     @Test
     fun `movieDetailsUseCase effectively calls repository on execute()`() = runTest {
         //assert
-        assertNull(movieDetailsUseCase.execute(1))
+        assertNull(movieDetailsUseCase.execute(""))
     }
 
 }
