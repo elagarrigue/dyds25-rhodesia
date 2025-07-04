@@ -10,8 +10,12 @@ import io.ktor.client.request.get
 class TMDBMoviesExternalSource(private val tmdbHttpClient: HttpClient) : PopularMoviesExternalSource,
     MoviesDetailsExternalSource {
 
-    override suspend fun getMovieDetailsFromSource(title : String): Movie =
-        getTMDBMovieDetails(title).TMDBtoDomainMovie()
+    override suspend fun getMovieDetailsFromSource(title : String): Movie? =
+        try {
+            getTMDBMovieDetails(title).TMDBtoDomainMovie()
+        } catch (_: Exception) {
+            null
+        }
 
     override suspend fun getPopularMoviesFromSource(): List<Movie> =
         getTMDBPopularMovies().results.map {it. TMDBtoDomainMovie()}
