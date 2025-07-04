@@ -21,9 +21,9 @@ class MoviesRepositoryImp(
             emptyList()
         }
 
-    override suspend fun getMovieDetails(id: Int): Movie? =
+    override suspend fun getMovieDetails(title: String): Movie? =
         try {
-            moviesExternalSourceBroker.getMovieDetailsFromSource(id)
+            moviesExternalSourceBroker.getMovieDetailsFromSource(title)
         } catch (_: Exception) {
             null
         }
