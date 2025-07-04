@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.dyds.movies.data.MoviesRepositoryImp
 import edu.dyds.movies.data.external.MoviesExternalSourceBroker
-import edu.dyds.movies.data.external.TMDBExternalSource
-import edu.dyds.movies.data.external.OMDBExternalSource
+import edu.dyds.movies.data.external.omdb.OMDBMoviesDetailsExternalSourceImpl
+import edu.dyds.movies.data.external.tmdb.TMDBMoviesExternalSourceImpl
 import edu.dyds.movies.data.local.CacheLocalSource
 import edu.dyds.movies.domain.repository.MoviesRepository
 import edu.dyds.movies.domain.usecase.MovieDetailsUseCaseImplementation
@@ -53,7 +53,7 @@ object MoviesDependencyInjector {
             url {
                 protocol = URLProtocol.HTTPS
                 host = "www.omdbapi.com"
-                parameters.append("api_key", OMDB_API_KEY)
+                parameters.append("apikey", OMDB_API_KEY)
             }
         }
         install(HttpTimeout) {
@@ -61,10 +61,10 @@ object MoviesDependencyInjector {
         }
     }
     private val cacheMovies = CacheLocalSource()
-    private val tmdbSource = TMDBExternalSource(tmdbHttpClient)
-    private val omdbSource = OMDBExternalSource(omdbHttpClient)
+    private val tmdbSource = TMDBMoviesExternalSourceImpl(tmdbHttpClient)
+    private val omdbSource = OMDBMoviesDetailsExternalSourceImpl(omdbHttpClient)
     private val broker = MoviesExternalSourceBroker(tmdbSource, omdbSource)
-    private val repository: MoviesRepository = MoviesRepositoryImp(cacheMovies, broker)
+    private val repository: MoviesRepository = MoviesRepositoryImp(cacheMovies, tmdbSource, broker)
     private val popularMoviesUseCase: PopularMoviesUseCase = PopularMoviesUseCaseImplementation(repository)
     private val movieDetailsUseCase: MovieDetailsUseCase = MovieDetailsUseCaseImplementation(repository)
 

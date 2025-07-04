@@ -1,7 +1,6 @@
 package edu.dyds.movies.data
 
 import edu.dyds.movies.data.external.MoviesDetailsExternalSource
-import edu.dyds.movies.data.external.MoviesExternalSourceBroker
 import edu.dyds.movies.data.external.PopularMoviesExternalSource
 import edu.dyds.movies.data.local.MoviesLocalSource
 import edu.dyds.movies.domain.entity.Movie
