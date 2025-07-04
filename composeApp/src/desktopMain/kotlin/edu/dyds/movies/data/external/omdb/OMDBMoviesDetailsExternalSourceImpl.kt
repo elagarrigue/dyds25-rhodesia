@@ -6,15 +6,15 @@ import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 
-class OMDBMoviesExternalSource(private val omdbHttpClient: HttpClient) : MoviesDetailsExternalSource {
+class OMDBMoviesDetailsExternalSourceImpl (private val omdbHttpClient: HttpClient) : MoviesDetailsExternalSource {
     override suspend fun getMovieDetailsFromSource(title: String): Movie? =
         try {
-            getOMDBMovieDetails(title).OMDBtoDomainMovie()
+            getOMDBMovieDetails(title).toDomainMovie()
         } catch (_: Exception) {
             null
         }
 
-    private suspend fun getOMDBMovieDetails(title: String) : OMDBRemoteResult =
+    private suspend fun getOMDBMovieDetails(title: String) : RemoteMovie =
         omdbHttpClient.get("/?t=$title").body()
 
 }
