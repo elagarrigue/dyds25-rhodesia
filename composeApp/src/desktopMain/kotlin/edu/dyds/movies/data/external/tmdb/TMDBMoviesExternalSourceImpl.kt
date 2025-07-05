@@ -11,11 +11,7 @@ class TMDBMoviesExternalSourceImpl(private val tmdbHttpClient: HttpClient) : Pop
     MoviesDetailsExternalSource {
 
     override suspend fun getMovieDetailsFromSource(title : String): Movie? =
-        try {
             getTMDBMovieDetails(title).results.first().toDomainMovie()
-        } catch (_: Exception) {
-            null
-        }
 
     override suspend fun getPopularMoviesFromSource(): List<Movie> =
         getTMDBPopularMovies().results.map { it.toDomainMovie() }

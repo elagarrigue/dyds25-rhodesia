@@ -24,5 +24,9 @@ class MoviesRepositoryImp(
         }
 
     override suspend fun getMovieDetails(title: String): Movie? =
-        movieDetailsExternalSource.getMovieDetailsFromSource(title)
+        try{
+            movieDetailsExternalSource.getMovieDetailsFromSource(title)
+        } catch (_: Exception){
+            null
+        }
 }
