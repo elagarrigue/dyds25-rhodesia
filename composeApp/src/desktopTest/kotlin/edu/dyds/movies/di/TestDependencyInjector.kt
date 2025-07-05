@@ -5,6 +5,8 @@ import edu.dyds.movies.data.fakes.MoviesRepositoryFake
 
 object TestDependencyInjector {
 
+    const val testTitle = "title"
+
     fun getRepositoryFake() = MoviesRepositoryFake()
 
     fun getTestMovieList(): List<Movie> = listOf(
@@ -18,7 +20,7 @@ object TestDependencyInjector {
 
     fun createMovie(id: Int = 0, voteAverage: Double = 0.0) = Movie(
         id = id,
-        title = "title",
+        title = testTitle,
         overview = "overview",
         releaseDate = "releaseDate",
         poster = "poster",

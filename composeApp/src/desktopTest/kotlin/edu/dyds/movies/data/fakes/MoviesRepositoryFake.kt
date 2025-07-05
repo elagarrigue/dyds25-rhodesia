@@ -13,7 +13,5 @@ class MoviesRepositoryFake: MoviesRepository  {
         return TestDependencyInjector.getTestMovieList()
     }
 
-    override suspend fun getMovieDetails(id: Int): Movie? {
-        return null
-    }
+    override suspend fun getMovieDetails(title: String): Movie? = null
 }
