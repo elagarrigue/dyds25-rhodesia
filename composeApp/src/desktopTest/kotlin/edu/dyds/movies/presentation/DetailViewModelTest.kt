@@ -25,7 +25,7 @@ class DetailViewModelTest {
     }
 
     private val fakeUseCase = object : MovieDetailsUseCase {
-        override suspend fun execute(movieId: Int): Movie {
+        override suspend fun execute(movieTitle: String): Movie {
             yield()
             return TestDependencyInjector.getTestMovie()
         }
@@ -47,7 +47,7 @@ class DetailViewModelTest {
         }
 
         // Act
-        detailViewModel.getMovieDetail(1)
+        detailViewModel.getMovieDetail("title")
 
         // Assert
         assertEquals(initialValue, emittedStates[0].isLoading)
