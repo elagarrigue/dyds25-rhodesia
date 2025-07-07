@@ -8,6 +8,7 @@ import edu.dyds.movies.domain.entity.Movie
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class MoviesRepositoryImpTest {
     class FakeLocalSource(
@@ -30,7 +31,8 @@ class MoviesRepositoryImpTest {
     }
 
     object MovieDetailsExternalSourceDummy: MoviesDetailsExternalSource {
-        override suspend fun getMovieDetailsFromSource(title: String): Movie? = null
+        override suspend fun getMovieDetailsFromSource(title: String): Movie? =
+            throw Exception("Dum Dum")
     }
 
     class FakeMovieDetailsExternalSource(private val movie: Movie): MoviesDetailsExternalSource {
@@ -99,5 +101,21 @@ class MoviesRepositoryImpTest {
         val result = repo.getMovieDetails(TestDependencyInjector.testTitle)
         // assert
         assertEquals(movie, result)
+    }
+
+    @Test
+    fun `getMovieDetails returns null on exception`() = runTest {
+        //arrange
+        val repo = MoviesRepositoryImp(
+            FakeLocalSource(),
+            FakeSuccessfulPopularMoviesExternalSource(),
+            MovieDetailsExternalSourceDummy
+        )
+
+        //act
+        val result = repo.getMovieDetails("title")
+
+        //assert
+        assertNull(result)
     }
 }
