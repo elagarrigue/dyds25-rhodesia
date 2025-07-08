@@ -4,6 +4,7 @@ import edu.dyds.movies.di.TestDependencyInjector
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertContains
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
@@ -30,14 +31,17 @@ class MoviesExternalSourceBrokerTest {
             FakeSuccessfulTMDBExternalSource,
             FakeSuccessfulOMDBExternalSource
         )
+        val expectedMovie = TestDependencyInjector.getTestMovie().copy(
+            overview = "TMDB:  ${TestDependencyInjector.getTestMovie().overview}\n\nOMDB: ${TestDependencyInjector.getTestMovie().overview}",
+            popularity = TestDependencyInjector.getTestMovie().popularity,
+            voteAverage = TestDependencyInjector.getTestMovie().voteAverage
+        )
 
         //act
         val result = broker.getMovieDetailsFromSource("")
-        val resultOverview = result?.overview ?: ""
 
         //assert
-        assertContains(resultOverview, "TMDB")
-        assertContains(resultOverview, "OMDB")
+        assertEquals(expectedMovie, result)
     }
 
     @Test
@@ -47,15 +51,15 @@ class MoviesExternalSourceBrokerTest {
             FakeSuccessfulTMDBExternalSource,
             FakeFailingExternalSource
         )
+        val expectedMovie = TestDependencyInjector.getTestMovie().copy(
+            overview = "TMDB: ${TestDependencyInjector.getTestMovie().overview}"
+        )
 
         //act
         val result = broker.getMovieDetailsFromSource("")
-        val resultOverview = result?.overview ?: ""
-        val resultContainsOMDB = resultOverview.contains("OMDB")
 
         //assert
-        assertContains(resultOverview, "TMDB")
-        assertFalse(resultContainsOMDB)
+        assertEquals(expectedMovie, result)
     }
 
     @Test
@@ -65,15 +69,15 @@ class MoviesExternalSourceBrokerTest {
             FakeFailingExternalSource,
             FakeSuccessfulOMDBExternalSource
         )
+        val expectedMovie = TestDependencyInjector.getTestMovie().copy(
+            overview = "OMDB: ${TestDependencyInjector.getTestMovie().overview}"
+        )
 
         //act
         val result = broker.getMovieDetailsFromSource("")
-        val resultOverview = result?.overview ?: ""
-        val resultContainsOMDB = resultOverview.contains("TMDB")
 
         //assert
-        assertContains(resultOverview, "OMDB")
-        assertFalse(resultContainsOMDB)
+        assertEquals(expectedMovie, result)
     }
 
     @Test
