@@ -2,11 +2,15 @@ package edu.dyds.movies.data.external
 
 import edu.dyds.movies.di.TestDependencyInjector
 import kotlinx.coroutines.test.runTest
+import kotlin.div
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
+
+private val tmdbMovie = TestDependencyInjector.createMovie(voteAverage = 6.0).copy(popularity = 10.0)
+private val omdbMovie = TestDependencyInjector.createMovie(voteAverage = 8.0).copy(popularity = 20.0)
 
 class MoviesExternalSourceBrokerTest {
 
@@ -16,12 +20,12 @@ class MoviesExternalSourceBrokerTest {
 
     object FakeSuccessfulTMDBExternalSource: MoviesDetailsExternalSource {
         override suspend fun getMovieDetailsFromSource(title: String) =
-            TestDependencyInjector.getTestMovie()
+            tmdbMovie
     }
 
     object FakeSuccessfulOMDBExternalSource: MoviesDetailsExternalSource {
         override suspend fun getMovieDetailsFromSource(title: String) =
-            TestDependencyInjector.getTestMovie()
+            omdbMovie
     }
 
     @Test
@@ -31,10 +35,10 @@ class MoviesExternalSourceBrokerTest {
             FakeSuccessfulTMDBExternalSource,
             FakeSuccessfulOMDBExternalSource
         )
-        val expectedMovie = TestDependencyInjector.getTestMovie().copy(
-            overview = "TMDB:  ${TestDependencyInjector.getTestMovie().overview}\n\nOMDB: ${TestDependencyInjector.getTestMovie().overview}",
-            popularity = TestDependencyInjector.getTestMovie().popularity,
-            voteAverage = TestDependencyInjector.getTestMovie().voteAverage
+        val expectedMovie =  TestDependencyInjector.getTestMovie().copy(
+            overview = "TMDB:  ${tmdbMovie.overview}\n\nOMDB: ${omdbMovie.overview}",
+            popularity = (tmdbMovie.popularity + omdbMovie.popularity) / 2.0,
+            voteAverage = (tmdbMovie.voteAverage + omdbMovie.voteAverage) / 2.0
         )
 
         //act
@@ -51,8 +55,8 @@ class MoviesExternalSourceBrokerTest {
             FakeSuccessfulTMDBExternalSource,
             FakeFailingExternalSource
         )
-        val expectedMovie = TestDependencyInjector.getTestMovie().copy(
-            overview = "TMDB: ${TestDependencyInjector.getTestMovie().overview}"
+        val expectedMovie = tmdbMovie.copy(
+            overview = "TMDB: ${tmdbMovie.overview}"
         )
 
         //act
@@ -69,8 +73,8 @@ class MoviesExternalSourceBrokerTest {
             FakeFailingExternalSource,
             FakeSuccessfulOMDBExternalSource
         )
-        val expectedMovie = TestDependencyInjector.getTestMovie().copy(
-            overview = "OMDB: ${TestDependencyInjector.getTestMovie().overview}"
+        val expectedMovie = omdbMovie.copy(
+            overview = "OMDB: ${omdbMovie.overview}"
         )
 
         //act
