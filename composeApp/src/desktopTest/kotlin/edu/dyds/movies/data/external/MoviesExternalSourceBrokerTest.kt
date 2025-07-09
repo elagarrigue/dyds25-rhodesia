@@ -2,11 +2,8 @@ package edu.dyds.movies.data.external
 
 import edu.dyds.movies.di.TestDependencyInjector
 import kotlinx.coroutines.test.runTest
-import kotlin.div
 import kotlin.test.Test
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
 private val tmdbMovie = TestDependencyInjector.createMovie(voteAverage = 6.0).copy(popularity = 10.0)
@@ -15,7 +12,7 @@ private val omdbMovie = TestDependencyInjector.createMovie(voteAverage = 8.0).co
 class MoviesExternalSourceBrokerTest {
 
     object FakeFailingExternalSource: MoviesDetailsExternalSource {
-        override suspend fun getMovieDetailsFromSource(title: String) = null
+        override suspend fun getMovieDetailsFromSource(title: String) = throw Exception(":c")
     }
 
     object FakeSuccessfulTMDBExternalSource: MoviesDetailsExternalSource {
