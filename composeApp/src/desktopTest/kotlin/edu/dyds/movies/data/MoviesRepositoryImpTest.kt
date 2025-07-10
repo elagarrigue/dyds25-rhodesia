@@ -1,44 +1,43 @@
 package edu.dyds.movies.data
 
+import edu.dyds.movies.data.external.MoviesDetailsExternalSource
+import edu.dyds.movies.data.external.PopularMoviesExternalSource
 import edu.dyds.movies.di.TestDependencyInjector
-import edu.dyds.movies.data.external.MoviesExternalSource
 import edu.dyds.movies.data.local.MoviesLocalSource
 import edu.dyds.movies.domain.entity.Movie
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class MoviesRepositoryImpTest {
-    class FakeSuccessfulLocalSource(
+    class FakeLocalSource(
         var movies: List<Movie> = emptyList()
     ) : MoviesLocalSource {
         override suspend fun getPopularMoviesFromSource() = movies
         override suspend fun update(popularMovies: List<Movie>) { this.movies = popularMovies }
     }
 
-    class FakeSuccessfulExternalSource(
-        private val movies: List<Movie> = emptyList(),
-        private val movie: Movie? = null
-    ) : MoviesExternalSource {
-        override suspend fun getPopularMoviesFromSource() = movies
-        override suspend fun getMovieDetailsFromSource(id: Int): Movie {
-            return movie ?: throw Exception("Movie not found")
-        }
+    class FakeSuccessfulPopularMoviesExternalSource (
+        private val movies: List<Movie> = emptyList()
+    ): PopularMoviesExternalSource {
+        override suspend fun getPopularMoviesFromSource(): List<Movie> = movies
     }
 
-    class FakeFailingLocalSource : MoviesLocalSource {
-        override suspend fun getPopularMoviesFromSource(): List<Movie> {
-            throw Exception("Fallo local")
-        }
-        override suspend fun update(popularMovies: List<Movie>) { }
-    }
-
-    class FakeFailingExternalSource : MoviesExternalSource {
+    class FakeFailingPopularMoviesExternalSource : PopularMoviesExternalSource {
         override suspend fun getPopularMoviesFromSource(): List<Movie> {
             throw Exception("Fallo external")
         }
-        override suspend fun getMovieDetailsFromSource(id: Int): Movie {
-            throw Exception("Fallo external")
+    }
+
+    object MovieDetailsExternalSourceDummy: MoviesDetailsExternalSource {
+        override suspend fun getMovieDetailsFromSource(title: String): Movie? =
+            throw Exception("Dum Dum")
+    }
+
+    class FakeMovieDetailsExternalSource(private val movie: Movie): MoviesDetailsExternalSource {
+        override suspend fun getMovieDetailsFromSource(title: String): Movie? {
+            return movie
         }
     }
 
@@ -47,8 +46,9 @@ class MoviesRepositoryImpTest {
         //arrange
         val moviesList = TestDependencyInjector.getTestMovieList()
         val repo = MoviesRepositoryImp(
-            FakeSuccessfulLocalSource(moviesList),
-            FakeSuccessfulExternalSource()
+            FakeLocalSource(moviesList),
+            FakeSuccessfulPopularMoviesExternalSource(),
+            MovieDetailsExternalSourceDummy
         )
         //act
         val result = repo.getPopularMovies()
@@ -60,10 +60,11 @@ class MoviesRepositoryImpTest {
     fun `getPopularMovies fetches from external if local is empty`() = runTest {
         // arrange
         val moviesList = TestDependencyInjector.getTestMovieList()
-        val local = FakeSuccessfulLocalSource()
+        val local = FakeLocalSource()
         val repo = MoviesRepositoryImp(
             local,
-            FakeSuccessfulExternalSource(moviesList)
+            FakeSuccessfulPopularMoviesExternalSource(moviesList),
+            MovieDetailsExternalSourceDummy
         )
         // act
         val result = repo.getPopularMovies()
@@ -77,8 +78,9 @@ class MoviesRepositoryImpTest {
     fun `getPopularMovies returns emptyList() on exception`() = runTest {
         // arrange
         val repo = MoviesRepositoryImp(
-            FakeFailingLocalSource(),
-            FakeFailingExternalSource()
+            FakeLocalSource(),
+            FakeFailingPopularMoviesExternalSource(),
+            MovieDetailsExternalSourceDummy
         )
         // act
         val result = repo.getPopularMovies()
@@ -87,28 +89,33 @@ class MoviesRepositoryImpTest {
     }
 
     @Test
-    fun `getMovieDetails returns movie from external by id`() = runTest {
+    fun `getMovieDetails returns movie from external by title`() = runTest {
         // arrange
         val movie = TestDependencyInjector.getTestMovie()
         val repo = MoviesRepositoryImp(
-            FakeSuccessfulLocalSource(),
-            FakeSuccessfulExternalSource(movie = movie)
+            FakeLocalSource(),
+            FakeSuccessfulPopularMoviesExternalSource(),
+            FakeMovieDetailsExternalSource(movie)
         )
         // act
-        val result = repo.getMovieDetails(0)
+        val result = repo.getMovieDetails(TestDependencyInjector.testTitle)
         // assert
         assertEquals(movie, result)
     }
 
     @Test
     fun `getMovieDetails returns null on exception`() = runTest {
-        // arrange
+        //arrange
         val repo = MoviesRepositoryImp(
-            FakeSuccessfulLocalSource(),
-            FakeFailingExternalSource())
-        // act
-        val result = repo.getMovieDetails(1)
-        // assert
-        assertEquals(null,result)
+            FakeLocalSource(),
+            FakeSuccessfulPopularMoviesExternalSource(),
+            MovieDetailsExternalSourceDummy
+        )
+
+        //act
+        val result = repo.getMovieDetails("title")
+
+        //assert
+        assertNull(result)
     }
 }
